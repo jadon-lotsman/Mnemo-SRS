@@ -64,9 +64,12 @@ namespace Itero.API.Controllers
         [HttpPost("finish")]
         public async Task<IActionResult> FinishIteration()
         {
-            await _iterationService.FinishIterationAsync(UserId);
+            var result = await _iterationService.FinishIterationAsync(UserId);
 
-            return Ok();
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
     }
 }

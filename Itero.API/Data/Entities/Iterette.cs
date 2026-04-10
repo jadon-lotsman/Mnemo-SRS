@@ -18,7 +18,7 @@ namespace Itero.API.Data.Entities
         public int IterationId { get; set; }
         public Iteration Iteration { get; set; }
         public int VocabularyEntryId { get; set; }
-        public VocabularyEntry VocabularyEntry { get; set; }
+        public VocabularyEntry VocabularyEntry { get; set; } // to delete
 
 
         public Iterette() { }

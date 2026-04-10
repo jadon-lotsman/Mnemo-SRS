@@ -33,6 +33,7 @@ namespace Itero.API.Services
         public async Task<Iteration?> GetIterationAsync(int userId)
         {
             return await _context.Iterations
+                .Include(i => i.Iterettes)
                 .FirstOrDefaultAsync(e => e.User.Id == userId);
         }
 
@@ -87,23 +88,25 @@ namespace Itero.API.Services
             return true;
         }
 
-        public async Task<bool> FinishIterationAsync(int userId)
+        public async Task<IterationResultDto?> FinishIterationAsync(int userId)
         {
             var iteration = await GetIterationAsync(userId);
 
-            if (iteration == null)
-                return false;
+            if (iteration == null || iteration.Iterettes == null)
+                return null;
 
 
             int correctCount = 0;
-            int titalCount = iteration.Iterettes.Count();
+            int totalCount = iteration.Iterettes.Count;
             var failedEntries = new List<VocabularyEntryDto>();
 
             const float SimilarityBorder = 0.75f;
 
             foreach (var iterette in iteration.Iterettes)
             {
-                if(CalcSimilarity(iterette) >= SimilarityBorder)
+                var entry = await _vocabularyService.GetEntryByIdAsync(userId, iterette.VocabularyEntryId);
+
+                if(CalcSimilarity(iterette, entry) >= SimilarityBorder)
                 {
                     correctCount++;
                 }
@@ -114,10 +117,12 @@ namespace Itero.API.Services
                 }
             }
 
-            return true;
+            var result = new IterationResultDto(correctCount, totalCount, failedEntries.ToArray(), iteration.Created);
+
+            return result;
         }
 
-        private float CalcSimilarity(Iterette iterette)
+        private float CalcSimilarity(Iterette iterette, VocabularyEntry entry)
         {
             string answer = iterette.UserAnswer;
 
@@ -125,7 +130,7 @@ namespace Itero.API.Services
             {
                 float maxSimilarity = 0;
 
-                foreach (string translation in iterette.VocabularyEntry.Translations)
+                foreach (string translation in entry.Translations)
                 {
                     float currentSimilarity = answer.GetSimilarity(translation);
                     maxSimilarity = Math.Max(maxSimilarity, currentSimilarity);
