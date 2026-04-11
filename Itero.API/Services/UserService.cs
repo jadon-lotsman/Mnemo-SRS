@@ -30,11 +30,15 @@ namespace Itero.API.Services
             return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
 
-        public async void CreateAsync(string username)
+        public async Task<bool> CreateAsync(string username)
         {
-            await _context.Users.AddAsync(new User(username));
+            if (await GetByUsernameAsync(username) != null)
+                return false;
 
+            await _context.Users.AddAsync(new User(username));
             await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }

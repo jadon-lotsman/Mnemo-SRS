@@ -10,19 +10,22 @@ namespace Itero.API.Data.Entities
     {
         public int Id { get; set; }
 
-        public DateTime Created { get; set; }
+        public DateTime Started { get; set; }
+        public DateTime? Finished { get; set; }
+        public bool WasFinished => Finished.HasValue;
 
 
         public int UserId { get; set; }
         public User User { get; set; }
-        public List<Iterette>? Iterettes { get; set; }
+        public List<Iterette> Iterettes { get; set; }
 
 
         public Iteration() { }
 
         public Iteration(User user, List<Iterette> iterettes)
         {
-            Created = DateTime.UtcNow;
+            Started = DateTime.UtcNow;
+            Finished = null;
             UserId = user.Id;
             User = user;
             Iterettes = iterettes;

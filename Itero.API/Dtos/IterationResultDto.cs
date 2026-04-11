@@ -13,13 +13,13 @@ namespace Itero.API.Dtos
         public VocabularyEntryDto[] FailedEntries { get; set; }
 
 
-        public IterationResultDto(int correct, int total, VocabularyEntryDto[] failedEntries, DateTime iterationDate)
+        public IterationResultDto(int correct, int total, VocabularyEntryDto[] failedEntries, DateTime started, DateTime finished)
         {
             Correct = correct;
             Total = total;
             Percent = (float) Correct / Total * 100;
-            Started = iterationDate;
-            Finished = DateTime.UtcNow;
+            Started = started;
+            Finished = finished;
             FailedEntries = failedEntries;
 
             if (Percent >= 90)

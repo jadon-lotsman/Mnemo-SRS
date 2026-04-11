@@ -77,7 +77,7 @@ namespace Itero.API.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteEntry(int id)
         {
-            var success = await _vocabularyService.RemoveEntryById(UserId, id);
+            bool success = await _vocabularyService.RemoveEntryById(UserId, id);
 
             if(!success)
                 return NotFound();

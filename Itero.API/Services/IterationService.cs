@@ -24,12 +24,6 @@ namespace Itero.API.Services
         }
 
 
-        private async Task<bool> GetAnyIterationAsync(int userId)
-        {
-            return await _context.Iterations
-                .AnyAsync(e => e.User.Id == userId);
-        }
-
         public async Task<Iteration?> GetIterationAsync(int userId)
         {
             return await _context.Iterations
@@ -47,16 +41,20 @@ namespace Itero.API.Services
         public async Task<Iterette?> GetIteretteByIdAsync(int userId, int iteretteId)
         {
             return await _context.Iterettes
+                .Include(i => i.Iteration)
                 .FirstOrDefaultAsync(s => s.Id == iteretteId && s.Iteration.UserId == userId);
         }
 
         public async Task<Iteration?> CreateIterationAsync(int userId)
         {
-            bool HasAny = await GetAnyIterationAsync(userId);
+            var iteration = await GetIterationAsync(userId);
 
-            if (HasAny)
+            if (iteration != null && !iteration.WasFinished)
                 return null;
-             
+
+            if (iteration != null && iteration.WasFinished)
+                _context.Iterations.Remove(iteration);
+
 
             var iterettes = new List<Iterette>();
             var rendomEntries = _vocabularyService.GetUserRandomEntriesAsync(userId).Result;
@@ -76,12 +74,13 @@ namespace Itero.API.Services
 
         public async Task<bool> SetIteretteAnswerAsync(int userId, int iteretteId, string answer)
         {
-            var iterationPart = await GetIteretteByIdAsync(userId, iteretteId);
+            var iterette = await GetIteretteByIdAsync(userId, iteretteId);
 
-            if (iterationPart == null)
+            if (iterette == null || iterette.Iteration.WasFinished)
                 return false;
-                
-            iterationPart.UserAnswer = answer;
+            
+
+            iterette.UserAnswer = answer;
 
             await _context.SaveChangesAsync();
 
@@ -104,20 +103,27 @@ namespace Itero.API.Services
 
             foreach (var iterette in iteration.Iterettes)
             {
-                var entry = await _vocabularyService.GetEntryByIdAsync(userId, iterette.VocabularyEntryId);
+                var restoredEntry = await _vocabularyService.GetEntryByIdAsync(userId, iterette.BaseVocabularyEntryId);
 
-                if(CalcSimilarity(iterette, entry) >= SimilarityBorder)
+                if(CalcSimilarity(iterette, restoredEntry) >= SimilarityBorder)
                 {
                     correctCount++;
                 }
                 else
                 {
                     var mapper = new VocabularyEntryMapper();
-                    failedEntries.Add(mapper.GetDto(iterette.VocabularyEntry));
+                    failedEntries.Add(mapper.GetDto(restoredEntry));
                 }
             }
 
-            var result = new IterationResultDto(correctCount, totalCount, failedEntries.ToArray(), iteration.Created);
+
+            if (!iteration.WasFinished)
+            {
+                iteration.Finished = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+            }
+
+            var result = new IterationResultDto(correctCount, totalCount, failedEntries.ToArray(), iteration.Started, iteration.Finished.Value);
 
             return result;
         }
@@ -140,7 +146,7 @@ namespace Itero.API.Services
             }
             else
             {
-                return answer.GetSimilarity(iterette.VocabularyEntry.Foreign);
+                return answer.GetSimilarity(entry.Foreign);
             }
         }
     }

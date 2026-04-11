@@ -2,6 +2,7 @@
 using Itero.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Itero.API.Controllers
@@ -11,13 +12,13 @@ namespace Itero.API.Controllers
     [Route("api/[controller]")]
     public class IterationController : ControllerBase
     {
-        private int UserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        private readonly IterationService _iterationService;
-
         public IterationController(IterationService service)
         {
             _iterationService = service;
         }
+
+        private int UserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        private readonly IterationService _iterationService;
 
 
         [HttpGet]
@@ -34,9 +35,9 @@ namespace Itero.API.Controllers
         [HttpGet("iterettes")]
         public async Task<IActionResult> GetAllIterettes()
         {
-            var steps = await _iterationService.GetAllIterettesAsync(UserId);
+            var iterettes = await _iterationService.GetAllIterettesAsync(UserId);
 
-            return Ok(steps);
+            return Ok(iterettes);
         }
 
         [HttpPost]
@@ -45,7 +46,7 @@ namespace Itero.API.Controllers
             var result = await _iterationService.CreateIterationAsync(UserId);
 
             if (result == null)
-                return BadRequest("Already exist");
+                return BadRequest();
 
             return Ok(result);
         }
@@ -53,10 +54,10 @@ namespace Itero.API.Controllers
         [HttpPut("answer/{id:int}")]
         public async Task<IActionResult> SetIteretteAnswer(int id, string answer)
         {
-            var success = await _iterationService.SetIteretteAnswerAsync(UserId, id, answer);
+            bool success = await _iterationService.SetIteretteAnswerAsync(UserId, id, answer);
 
             if (!success)
-                return NotFound();
+                return BadRequest();
 
             return Ok();
         }

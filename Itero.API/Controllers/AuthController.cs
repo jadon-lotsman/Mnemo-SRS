@@ -12,38 +12,35 @@ namespace Itero.API.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
-        private readonly UserService _userService;
-
         public AuthController(IConfiguration configuration, UserService userService)
         {
             _configuration = configuration;
             _userService = userService;
         }
 
+        private readonly IConfiguration _configuration;
+        private readonly UserService _userService;
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(string username)
         {
-            User? user = await _userService.GetByUsernameAsync(username);
+            var user = await _userService.GetByUsernameAsync(username);
 
             if (user == null)
                 return Unauthorized();
 
-            string token = GenerateJwt(user);
-            return Ok(token);
+            return Ok(GenerateJwt(user));
         }
-
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(string username)
         {
-            User? user = await _userService.GetByUsernameAsync(username);
+            bool success = await _userService.CreateAsync(username);
 
-            if (user != null)
-                return BadRequest();
+            if (success == false)
+                return Conflict();
 
-            _userService.CreateAsync(username);
             return Ok();
         }
 
