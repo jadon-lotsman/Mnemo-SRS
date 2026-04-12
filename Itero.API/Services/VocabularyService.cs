@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Itero.API.Common;
 using Itero.API.Data;
 using Itero.API.Data.Entities;
 using Itero.API.Dtos;
@@ -31,18 +32,6 @@ namespace Itero.API.Services
             return await GetEntriesByUserQuery(userId)
                 .ToListAsync();
         }
-
-        public async Task<List<VocabularyEntry>> GetUserRandomEntriesAsync(int userId, int count=5)
-        {
-            var entries = await GetAllEntriesAsync(userId);
-
-            return entries
-                .OrderBy(x => Guid.NewGuid())
-                .Take(count)
-                .ToList();
-        }
-
-
         public async Task<VocabularyEntry?> GetEntryByIdAsync(int userId, int id)
         {
             return await GetEntriesByUserQuery(userId)
@@ -52,69 +41,76 @@ namespace Itero.API.Services
         public async Task<VocabularyEntry?> GetEntryByKeyAsync(int userId, string key)
         {
             return await GetEntriesByUserQuery(userId)
-                .FirstOrDefaultAsync(e => e.Foreign == key);
+                .FirstOrDefaultAsync(e => e.Foreign == key.ToLowerInvariant());
+        }
+
+        public List<VocabularyEntry> GetUserRandomEntries(int userId, int count=5)
+        {
+            return _context.Entries.Where(e => e.User.Id == userId)
+                .OrderBy(x => Guid.NewGuid())
+                .Take(count)
+                .ToList();
         }
 
 
-        public async Task<VocabularyEntry?> CreateEntryAsync(int userId, VocabularyEntryDto createDTO)
+        public async Task<RequestResult<VocabularyEntry>> CreateEntryAsync(int userId, VocabularyEntryDto dto)
         {
+            if (!Mapper.ValidDto(dto))
+                return RequestResult<VocabularyEntry>.Failure("INVALID_DATA");
+
+
             var user = await _userService.GetByIdAsync(userId);
 
             if (user == null)
-                return null;
+                return RequestResult<VocabularyEntry>.Failure("USER_NOT_FOUND");
 
 
-            var mapper = new VocabularyEntryMapper();
-            string key = mapper.PrepareForeign(createDTO.Foreign);
+            string foreignKey = Mapper.PrepareForeign(dto.Foreign!);
+            var entryByKey = await GetEntryByKeyAsync(userId, foreignKey);
 
-            var currentEntry = await GetEntryByKeyAsync(userId, key);
-
-            if (currentEntry != null)
-                return null;
+            if (entryByKey != null)
+                return RequestResult<VocabularyEntry>.Failure("DUPLICATE_ENTRY");
 
 
-            var entry = mapper.GetEntry(createDTO, user);
+            var entry = Mapper.MapToEntry(dto, user);
 
             await _context.Entries.AddAsync(entry);
             await _context.SaveChangesAsync();
 
-            return entry;
+            return RequestResult<VocabularyEntry>.Success(entry);
         }
 
-        public async Task<VocabularyEntry?> PatchEntryAsync(int userId, int entryId, VocabularyPatchDto patchDTO)
+        public async Task<RequestResult<VocabularyEntry>> PatchEntryAsync(int userId, int entryId, VocabularyPatchDto patchDto)
         {
+            if (!Mapper.ValidDto(patchDto))
+                return RequestResult<VocabularyEntry>.Failure("INVALID_DATA");
+
+
             var currentEntry = await GetEntryByIdAsync(userId, entryId);
 
             if (currentEntry == null)
-                return null;
+                return RequestResult<VocabularyEntry>.Failure("ENTRY_NOT_FOUND");
 
 
-            var user = await _userService.GetByIdAsync(userId);
-
-            if (user == null)
-                return null;
-
-
-            var mapper = new VocabularyEntryMapper();
-            currentEntry = mapper.GetPatched(currentEntry, patchDTO);
+            Mapper.PatchFromDto(currentEntry, patchDto);
 
             await _context.SaveChangesAsync();
 
-            return currentEntry;
+            return RequestResult<VocabularyEntry>.Success(currentEntry);
         }
 
-        public async Task<bool> RemoveEntryById(int userId, int entryId)
+        public async Task<RequestResult<bool>> RemoveEntryByIdAsync(int userId, int entryId)
         {
             var currentEntry = await GetEntryByIdAsync(userId, entryId);
 
             if (currentEntry == null)
-                return false;
+                return RequestResult<bool>.Failure("ENTRY_NOT_FOUND");
                 
 
             _context.Entries.Remove(currentEntry);
             await _context.SaveChangesAsync();
 
-            return true;
+            return RequestResult<bool>.Success(true);
         }
     }
 }

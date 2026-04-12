@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Itero.API.Services;
 using Itero.API.Dtos;
+using Itero.API.Common;
 
 namespace Itero.API.Controllers
 {
@@ -27,7 +28,8 @@ namespace Itero.API.Controllers
         {
             var entries = await _vocabularyService.GetAllEntriesAsync(UserId);
 
-            return Ok(entries);
+            var entriesDto = Mapper.MapToDto(entries);
+            return Ok(entriesDto);
         }
 
         [HttpGet("{id:int}")]
@@ -38,7 +40,8 @@ namespace Itero.API.Controllers
             if (entry == null)
                 return NotFound();
 
-            return Ok(entry);
+            var entryDto = Mapper.MapToDto(entry);
+            return Ok(entryDto);
         }
 
         [HttpGet("{key}")]
@@ -48,39 +51,64 @@ namespace Itero.API.Controllers
 
             if (entry == null)
                 return NotFound();
-
-            return Ok(entry);
+            
+            var entryDto = Mapper.MapToDto(entry);
+            return Ok(entryDto);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> CreateEntry(VocabularyEntryDto dto)
         {
             var result = await _vocabularyService.CreateEntryAsync(UserId, dto);
 
-            if (result == null)
-                return BadRequest();
+            if (!result.IsSuccess)
+            {
+                return result.ErrorCode switch
+                {
+                    "INVALID_DATA" => BadRequest(result.ErrorCode),
+                    "USER_NOT_FOUND" => NotFound(result.ErrorCode),
+                    "DUPLICATE_ENTRY" => Conflict(result.ErrorCode),
+                    _ => StatusCode(500, result.ErrorCode)
+                };
+            }
 
-            return Ok(result);
+            var entryDto = Mapper.MapToDto(result.Value);
+            return Ok(entryDto);
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateEntry(int id, VocabularyPatchDto dto)
+        public async Task<IActionResult> PatchEntry(int id, VocabularyPatchDto dto)
         {
             var result = await _vocabularyService.PatchEntryAsync(UserId, id, dto);
 
-            if (result == null)
-                return NotFound();
+            if (!result.IsSuccess)
+            {
+                return result.ErrorCode switch
+                {
+                    "INVALID_DATA" => BadRequest(result.ErrorCode),
+                    "ENTRY_NOT_FOUND" => NotFound(result.ErrorCode),
+                    _ => StatusCode(500, result.ErrorCode)
+                };
+            }
 
-            return Ok(result);
+            var entryDto = Mapper.MapToDto(result.Value);
+            return Ok(entryDto);
         }
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteEntry(int id)
         {
-            bool success = await _vocabularyService.RemoveEntryById(UserId, id);
+            var result = await _vocabularyService.RemoveEntryByIdAsync(UserId, id);
 
-            if(!success)
-                return NotFound();
+            if(!result.IsSuccess)
+            {
+                return result.ErrorCode switch
+                {
+                    "ENTRY_NOT_FOUND" => NotFound(result.ErrorCode),
+                    _ => StatusCode(500, result.ErrorCode)
+                };
+            }
 
             return NoContent();
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Itero.API.Common;
 using Itero.API.Data;
 using Itero.API.Data.Entities;
 using Itero.API.Dtos;
@@ -13,8 +14,11 @@ namespace Itero.API.Services
     public class IterationService
     {
         private AppDbContext _context;
-        private VocabularyService _vocabularyService;
         private UserService _userService;
+        private VocabularyService _vocabularyService;
+
+        private static Random _random = new Random();
+
 
         public IterationService(AppDbContext context, UserService userService, VocabularyService vocabularyService)
         {
@@ -23,6 +27,14 @@ namespace Itero.API.Services
             _vocabularyService = vocabularyService;
         }
 
+
+        public async Task<RequestResult<Iteration>> GetIterationStatusAsync(int userId)
+        {
+            var iteration = await GetIterationAsync(userId);
+            if (iteration == null) return RequestResult<Iteration>.Failure("ITERATION_NOT_FOUND");
+            if (iteration.WasFinished) return RequestResult<Iteration>.Failure("ITERATION_WAS_FINISHED");
+            else return RequestResult<Iteration>.Failure("ITERATION_IN_PROCESS");
+        }
 
         public async Task<Iteration?> GetIterationAsync(int userId)
         {
@@ -45,46 +57,53 @@ namespace Itero.API.Services
                 .FirstOrDefaultAsync(s => s.Id == iteretteId && s.Iteration.UserId == userId);
         }
 
-        public async Task<Iteration?> CreateIterationAsync(int userId)
+
+        public async Task<RequestResult<Iteration>> StartIterationAsync(int userId)
         {
             var iteration = await GetIterationAsync(userId);
 
             if (iteration != null && !iteration.WasFinished)
-                return null;
-
-            if (iteration != null && iteration.WasFinished)
+                return RequestResult<Iteration>.Failure("ITERATION_NOT_FINISHED");
+            else if (iteration != null && iteration.WasFinished)
                 _context.Iterations.Remove(iteration);
 
 
             var iterettes = new List<Iterette>();
-            var rendomEntries = _vocabularyService.GetUserRandomEntriesAsync(userId).Result;
+            var randomEntries = _vocabularyService.GetUserRandomEntries(userId);
 
-            foreach (var entry in rendomEntries)
-                iterettes.Add(new Iterette(entry, true));
+            foreach (var entry in randomEntries)
+                iterettes.Add(new Iterette(entry, _random.Next(2) == 0));
+
 
             var currentUser = await _userService.GetByIdAsync(userId);
+
+            if (currentUser == null)
+                return RequestResult<Iteration>.Failure("USER_NOT_FOUND");
+
+
             var currentIteration = new Iteration(currentUser, iterettes);
 
             await _context.Iterations.AddAsync(currentIteration);
             await _context.SaveChangesAsync();
 
-            return currentIteration;
+            return RequestResult<Iteration>.Success(currentIteration);
         }
 
-
-        public async Task<bool> SetIteretteAnswerAsync(int userId, int iteretteId, string answer)
+        public async Task<RequestResult<Iterette>> SetIteretteAnswerAsync(int userId, int iteretteId, string answer)
         {
             var iterette = await GetIteretteByIdAsync(userId, iteretteId);
 
-            if (iterette == null || iterette.Iteration.WasFinished)
-                return false;
-            
+            if (iterette == null)
+                return RequestResult<Iterette>.Failure("ITERETTE_NOT_FOUND");
+
+            if (iterette.Iteration.WasFinished)
+                return RequestResult<Iterette>.Failure("ITERATION_WAS_FINISHED");
+
 
             iterette.UserAnswer = answer;
-
             await _context.SaveChangesAsync();
 
-            return true;
+            return RequestResult<Iterette>.Success(iterette);
         }
 
         public async Task<IterationResultDto?> FinishIterationAsync(int userId)
@@ -111,8 +130,7 @@ namespace Itero.API.Services
                 }
                 else
                 {
-                    var mapper = new VocabularyEntryMapper();
-                    failedEntries.Add(mapper.GetDto(restoredEntry));
+                    failedEntries.Add(Mapper.MapToDto(restoredEntry));
                 }
             }
 

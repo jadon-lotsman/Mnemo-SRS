@@ -30,19 +30,28 @@ namespace Itero.API.Controllers
             if (user == null)
                 return Unauthorized();
 
+
             return Ok(GenerateJwt(user));
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(string username)
         {
-            bool success = await _userService.CreateAsync(username);
+            var result = await _userService.CreateAsync(username);
 
-            if (success == false)
-                return Conflict();
+            if (!result.IsSuccess)
+            {
+                return result.ErrorCode switch
+                {
+                    "USERNAME_TAKEN" => Conflict(result.ErrorCode),
+                    "INVALID_PASSWORD" => BadRequest(result.ErrorCode),
+                    _ => StatusCode(500, result.ErrorCode)
+                };
+            }
 
             return Ok();
         }
+
 
         private string GenerateJwt(User user)
         {

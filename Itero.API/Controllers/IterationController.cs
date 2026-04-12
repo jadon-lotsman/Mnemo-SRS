@@ -1,4 +1,6 @@
 ﻿using System.Security.Claims;
+using Itero.API.Common;
+using Itero.API.Data.Entities;
 using Itero.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -22,14 +24,11 @@ namespace Itero.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetIteration()
+        public async Task<IActionResult> GetIterationStatus()
         {
-            var iteration = await _iterationService.GetIterationAsync(UserId);
+            var result = await _iterationService.GetIterationStatusAsync(UserId);
 
-            if (iteration == null) 
-                return NotFound();
-
-            return Ok(iteration);
+            return StatusCode(0, result.ErrorCode);
         }
 
         [HttpGet("iterettes")]
@@ -37,29 +36,46 @@ namespace Itero.API.Controllers
         {
             var iterettes = await _iterationService.GetAllIterettesAsync(UserId);
 
-            return Ok(iterettes);
+            var iterettesDto = Mapper.MapToDto(iterettes);
+            return Ok(iterettesDto);
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> CreateIteration()
+        public async Task<IActionResult> StartIteration()
         {
-            var result = await _iterationService.CreateIterationAsync(UserId);
+            var result = await _iterationService.StartIterationAsync(UserId);
 
-            if (result == null)
-                return BadRequest();
+            if (!result.IsSuccess)
+            {
+                return result.ErrorCode switch
+                {
+                    "USER_NOT_FOUND" => NotFound(result.ErrorCode),
+                    "ITERATION_NOT_FINISHED" => Conflict(result.ErrorCode),
+                    _ => StatusCode(500, result.ErrorCode)
+                };
+            }
 
-            return Ok(result);
+            return Ok();
         }
 
         [HttpPut("answer/{id:int}")]
         public async Task<IActionResult> SetIteretteAnswer(int id, string answer)
         {
-            bool success = await _iterationService.SetIteretteAnswerAsync(UserId, id, answer);
+            var result = await _iterationService.SetIteretteAnswerAsync(UserId, id, answer);
 
-            if (!success)
-                return BadRequest();
+            if (!result.IsSuccess)
+            {
+                return result.ErrorCode switch
+                {
+                    "ITERETTE_NOT_FOUND" => NotFound(result.ErrorCode),
+                    "ITERATION_WAS_FINISHED" => BadRequest(result.ErrorCode),
+                    _ => StatusCode(500, result.ErrorCode)
+                };
+            }
 
-            return Ok();
+            var iteretteDto = Mapper.MapToDto(result.Value);
+            return Ok(iteretteDto);
         }
 
         [HttpPost("finish")]

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Itero.API.Common;
 using Itero.API.Data;
 using Itero.API.Data.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -27,18 +28,29 @@ namespace Itero.API.Services
 
         public async Task<User?> GetByUsernameAsync(string username)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username.ToLowerInvariant() == username.ToLowerInvariant());
         }
 
-        public async Task<bool> CreateAsync(string username)
+
+        public async Task<RequestResult<bool>> CreateAsync(string username)
         {
             if (await GetByUsernameAsync(username) != null)
-                return false;
+                return RequestResult<bool>.Failure("USERNAME_TAKEN");
 
-            await _context.Users.AddAsync(new User(username));
+            //if (string.IsNullOrWhiteSpace(password))
+            //    return RequestResult<bool>.Failure("INVALID_PASSWORD");
+
+
+            var user = new User
+            {
+                Username = username,
+                Registered = DateTime.UtcNow
+            };
+
+            await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
-            return true;
+            return RequestResult<bool>.Success(true);
         }
     }
 }
