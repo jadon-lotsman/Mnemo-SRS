@@ -28,7 +28,7 @@ namespace Itero.API.Services
 
         public async Task<User?> GetByUsernameAsync(string username)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Username.ToLowerInvariant() == username.ToLowerInvariant());
+            return await _context.Users.FirstOrDefaultAsync(u => string.Equals(u.Username, username));
         }
 
 

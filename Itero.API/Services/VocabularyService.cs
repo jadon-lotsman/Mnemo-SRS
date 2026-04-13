@@ -47,6 +47,7 @@ namespace Itero.API.Services
         public List<VocabularyEntry> GetUserRandomEntries(int userId, int count=5)
         {
             return _context.Entries.Where(e => e.User.Id == userId)
+                .AsEnumerable()
                 .OrderBy(x => Guid.NewGuid())
                 .Take(count)
                 .ToList();
