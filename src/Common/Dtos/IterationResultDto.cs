@@ -1,6 +1,6 @@
-﻿using Itero.API.Data.Entities;
+﻿using Itereta.Data.Entities;
 
-namespace Itero.API.Dtos
+namespace Itereta.Common.Dtos
 {
     public class IterationResultDto
     {
@@ -10,10 +10,10 @@ namespace Itero.API.Dtos
         public char LetterGrade { get; set; }
         public DateTime Started { get; set; }
         public DateTime Finished { get; set; }
-        public VocabularyEntryDto[] FailedEntries { get; set; }
+        public VocabularyResponseDto[] FailedEntries { get; set; }
 
 
-        public IterationResultDto(int correct, int total, VocabularyEntryDto[] failedEntries, DateTime started, DateTime finished)
+        public IterationResultDto(int correct, int total, VocabularyResponseDto[] failedEntries, DateTime started, DateTime finished)
         {
             Correct = correct;
             Total = total;

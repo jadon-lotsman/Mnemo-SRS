@@ -1,4 +1,4 @@
-﻿namespace Itero.API.Common
+﻿namespace Itereta.Common
 {
     public class RequestResult<T>
     {

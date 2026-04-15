@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Itero.API
+namespace Itereta
 {
     public class Program
     {

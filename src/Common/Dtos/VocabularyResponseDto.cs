@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Itero.API.Dtos
+namespace Itereta.Common.Dtos
 {
-    public class VocabularyEntryDto
+    public class VocabularyResponseDto
     {
+        public int Id { get; set; }
         public string? Foreign { get; set; }
         public string? Transcription { get; set; }
         public string[]? Examples { get; set; }

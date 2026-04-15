@@ -1,12 +1,12 @@
 ﻿using System.Text;
-using Itero.API.Data;
-using Itero.API.Services;
+using Itereta.Data;
+using Itereta.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-namespace Itero.API
+namespace Itereta
 {
     public class Startup
     {
@@ -47,7 +47,7 @@ namespace Itero.API
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "IteroAPI" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Itereta-API" });
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {

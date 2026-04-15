@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Itero.API
+namespace Itereta
 {
     public static class StringExtension
     {

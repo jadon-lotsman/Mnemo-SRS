@@ -1,7 +1,8 @@
-﻿namespace Itero.API.Dtos
+﻿namespace Itereta.Common.Dtos
 {
-    public class IteretteDto
+    public class IteretteResponseDto
     {
+        public int Id { get; set; }
         public string? Prompt { get; set; }
         public string? UserAnswer { get; set; }
     }

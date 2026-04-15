@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Itero.API.Services;
-using Itero.API.Dtos;
-using Itero.API.Common;
+using Itereta.Services;
+using Itereta.Common;
+using Itereta.Common.Dtos;
 
-namespace Itero.API.Controllers
+namespace Itereta.Controllers
 {
     [ApiController]
     [Authorize]
@@ -58,7 +58,7 @@ namespace Itero.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateEntry(VocabularyEntryDto dto)
+        public async Task<IActionResult> CreateEntry(VocabularyCreateDto dto)
         {
             var result = await _vocabularyService.CreateEntryAsync(UserId, dto);
 

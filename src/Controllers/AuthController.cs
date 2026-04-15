@@ -3,10 +3,10 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
-using Itero.API.Services;
-using Itero.API.Data.Entities;
+using Itereta.Services;
+using Itereta.Data.Entities;
 
-namespace Itero.API.Controllers
+namespace Itereta.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

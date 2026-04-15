@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Itero.API.Common;
-using Itero.API.Data;
-using Itero.API.Data.Entities;
-using Itero.API.Dtos;
+using Itereta;
+using Itereta.Common;
+using Itereta.Common.Dtos;
+using Itereta.Data;
+using Itereta.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Itero.API.Services
+namespace Itereta.Services
 {
     public class IterationService
     {

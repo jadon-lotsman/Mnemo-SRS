@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Itero.API.Common;
-using Itero.API.Data;
-using Itero.API.Data.Entities;
-using Itero.API.Dtos;
+using Itereta.Common;
+using Itereta.Common.Dtos;
+using Itereta.Data;
+using Itereta.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Itero.API.Services
+namespace Itereta.Services
 {
     public class VocabularyService
     {
@@ -63,7 +63,7 @@ namespace Itero.API.Services
         }
 
 
-        public async Task<RequestResult<VocabularyEntry>> CreateEntryAsync(int userId, VocabularyEntryDto dto)
+        public async Task<RequestResult<VocabularyEntry>> CreateEntryAsync(int userId, VocabularyCreateDto dto)
         {
             if (!Mapper.ValidDto(dto))
                 return RequestResult<VocabularyEntry>.Failure("INVALID_DATA");

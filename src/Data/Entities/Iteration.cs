@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Itero.API.Data.Entities
+namespace Itereta.Data.Entities
 {
     public class Iteration
     {

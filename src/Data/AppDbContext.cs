@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Itero.API.Data.Entities;
+using Itereta.Data.Entities;
 
-namespace Itero.API.Data
+namespace Itereta.Data
 {
     public class AppDbContext : DbContext
     {

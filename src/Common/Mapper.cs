@@ -1,14 +1,15 @@
 ﻿using System.Formats.Tar;
 using System.Reflection;
-using Itero.API.Data.Entities;
-using Itero.API.Dtos;
+using Itereta;
+using Itereta.Common.Dtos;
+using Itereta.Data.Entities;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Itero.API.Common
+namespace Itereta.Common
 {
     public static class Mapper
     {
-        public static bool ValidDto(VocabularyEntryDto? dto)
+        public static bool ValidDto(VocabularyCreateDto? dto)
         {
             return dto != null && dto.Foreign != string.Empty && dto.Translations != null && dto.Translations.Any(t => !string.IsNullOrWhiteSpace(t));
         }
@@ -22,12 +23,13 @@ namespace Itero.API.Common
 
 
 
-        public static VocabularyEntryDto? MapToDto(VocabularyEntry? entry)
+        public static VocabularyResponseDto? MapToDto(VocabularyEntry? entry)
         {
             if (entry == null) return null;
 
-            return new VocabularyEntryDto
+            return new VocabularyResponseDto
             {
+                Id              =   entry.Id,
                 Foreign         =   PrepareForeign(entry.Foreign),
                 Transcription   =   PrepareTranscription(entry.Transcription),
                 Examples        =   PrepareExamples(entry.Examples),
@@ -35,7 +37,7 @@ namespace Itero.API.Common
             };
         }
 
-        public static VocabularyEntryDto[] MapToDto(IEnumerable<VocabularyEntry> entries)
+        public static VocabularyResponseDto[] MapToDto(IEnumerable<VocabularyEntry> entries)
         {
             return entries
                 .Where(e => e != null)
@@ -44,18 +46,19 @@ namespace Itero.API.Common
                 .ToArray();
         }
 
-        public static IteretteDto? MapToDto(Iterette? iterette)
+        public static IteretteResponseDto? MapToDto(Iterette? iterette)
         {
             if (iterette == null) return null;
 
-            return new IteretteDto
+            return new IteretteResponseDto
             {
-                Prompt = iterette.Prompt,
-                UserAnswer = iterette.UserAnswer
+                Id          =   iterette.Id,
+                Prompt      =   iterette.Prompt,
+                UserAnswer  =   iterette.UserAnswer
             };
         }
 
-        public static IteretteDto[] MapToDto(IEnumerable<Iterette> iterettes)
+        public static IteretteResponseDto[] MapToDto(IEnumerable<Iterette> iterettes)
         {
             return iterettes
                 .Where(e => e != null)
@@ -65,7 +68,7 @@ namespace Itero.API.Common
         }
 
 
-        public static VocabularyEntry MapToEntry(VocabularyEntryDto dto, User user)
+        public static VocabularyEntry MapToEntry(VocabularyCreateDto dto, User user)
         {
             return new VocabularyEntry()
             {

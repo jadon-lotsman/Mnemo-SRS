@@ -1,13 +1,13 @@
 ﻿using System.Security.Claims;
-using Itero.API.Common;
-using Itero.API.Data.Entities;
-using Itero.API.Services;
+using Itereta.Common;
+using Itereta.Services;
+using Itereta.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Itero.API.Controllers
+namespace Itereta.Controllers
 {
     [ApiController]
     [Authorize]
