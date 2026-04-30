@@ -10,7 +10,7 @@ using Mnemo.Services;
 using Mnemo.Services.Handlers;
 using Mnemo.Services.Queries;
 
-namespace tests.Integration
+namespace Mnemo.Tests.Integration
 {
     public class IntegrationTestBase : IDisposable
     {

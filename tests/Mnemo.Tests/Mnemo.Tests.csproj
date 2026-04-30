@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Mnemo.csproj" />
+    <ProjectReference Include="..\..\src\Mnemo.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+
+    <title>Mnemo - Never Forget</title>
+</head>
+
+<body>
+    <div class="collapse-wrapper">
+
+        <input checked type="checkbox" id="toggle1" class="toggle-input">
+        <label for="toggle1" class="toggle-label">
+            <span class="material-symbols-rounded toggle-chevron">chevron_forward</span>
+            <div class="section-title">
+                <h2>Calendar</h2>
+            </div>
+        </label>
+
+        <div class="content">
+
+            <section class="calendar">
+                <div class="calendar-day">
+                    <span>17</span>
+                    <span>apr.</span>
+                </div>
+                <div class="calendar-day">
+                    <span>18</span>
+                    <span>apr.</span>
+                </div>
+                <div class="calendar-day">
+                    <span>19</span>
+                    <span>apr.</span>
+                </div>
+                <div class="calendar-day">
+                    <span>20</span>
+                    <span>apr.</span>
+                </div>
+                <div class="calendar-day">
+                    <span>21</span>
+                    <span>apr.</span>
+                </div>
+                <div class="calendar-day">
+                    <span>22</span>
+                    <span>apr.</span>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <div class="collapse-wrapper">
+
+        <input checked type="checkbox" id="toggle2" class="toggle-input">
+        <label for="toggle2" class="toggle-label">
+            <span class="material-symbols-rounded toggle-chevron">chevron_forward</span>
+            <div class="section-title">
+                <h2>Training</h2>
+            </div>
+        </label>
+        <div class="content">
+
+            <section>
+                <div class="mode-wrapper">
+                    <div class="training-radio-item">
+                        <input type="radio" name="mode" id="radio-fast">
+                        <label for="radio-fast">
+                            <div class="mode-title">Fast session</div>
+                            <div class="mode-description">Random words without save results</div>
+                        </label>
+                    </div>
+                    <div class="training-radio-item">
+                        <input checked type="radio" name="mode" id="radio-planned">
+                        <label for="radio-planned">
+                            <div class="mode-title">Planned at today</div>
+                            <div class="mode-description">Planned words with save results</div>
+                        </label>
+                    </div>
+                </div>
+
+                <button class="big-button">Start</button>
+            </section>
+
+        </div>
+    </div>
+
+    <div class="collapse-wrapper">
+
+        <input type="checkbox" id="toggle3" class="toggle-input">
+        <label for="toggle3" class="toggle-label">
+            <span class="material-symbols-rounded toggle-chevron">chevron_forward</span>
+            <div class="section-title">
+                <h2>Self-Assessment</h2>
+            </div>
+        </label>
+        <div class="content">
+            Nothing...
+        </div>
+    </div>
+
+    <div class="section-title">
+        <h2>Vocabulary</h2>
+        <span>20 entries, 27 translations</span>
+    </div>
+
+    <div class="input-wrapper">
+        <form class="search-form">
+            <input type="search" placeholder="Search...">
+            <button type="button" class="small-button">
+                <span class="material-symbols-rounded">arrow_forward</span>
+            </button>
+        </form>
+
+        <button type="button" class="small-button">
+            <span class="material-symbols-rounded">add</span>
+        </button>
+    </div>
+
+    <div>
+
+        <article class="entry">
+            <header>
+                <div class="foreign">apple</div>
+                <div class="transcription">[`aepel]</div>
+                <ol class="translations">
+                    <li>
+                        <div>яблоко</div>
+                        <div class="part-of-speech">(сущ.)</div>
+                    </li>
+                    <li>
+                        <div>яблочко</div>
+                    </li>
+                    <li>
+                        <div>яблочный</div>
+                        <div class="part-of-speech">(прил.)</div>
+                    </li>
+                </ol>
+            </header>
+            <footer>
+                <ol>
+                    <li>This apple is very sweet.</li>
+                    <li>An apple a day keeps the doctor away.</li>
+                </ol>
+            </footer>
+        </article>
+
+    </div>
+</body>
+
+</html>

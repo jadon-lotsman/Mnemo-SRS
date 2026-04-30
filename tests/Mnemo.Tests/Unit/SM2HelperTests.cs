@@ -1,6 +1,6 @@
 using Mnemo.Common;
 
-namespace tests.Unit
+namespace Mnemo.Tests.Unit
 {
     public class SM2HelperTests
     {

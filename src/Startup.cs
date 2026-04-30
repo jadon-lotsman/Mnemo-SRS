@@ -108,6 +108,7 @@ namespace Mnemo
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseAuthentication();
             app.UseAuthorization();

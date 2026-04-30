@@ -1,5 +1,5 @@
-﻿using Mnemo.Contracts.Dtos.Vocabulary;
-using Mnemo.Data.Entities;
+﻿using Mnemo.Data.Entities;
+using Mnemo.Contracts.Dtos.Vocabulary;
 
 namespace Mnemo.Contracts.Dtos.Repetition
 {

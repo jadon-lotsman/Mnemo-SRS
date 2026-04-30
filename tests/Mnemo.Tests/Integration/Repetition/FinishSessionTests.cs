@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Mnemo.Common;
 using Mnemo.Data.Entities;
-using Mnemo.Services;
+using Mnemo.Tests.Integration;
+using Mnemo.Data.Entities;
 using Mnemo.Services.Queries;
+using Mnemo.Services;
+using Mnemo.Common;
 
-namespace tests.Integration.Repetition
+namespace Mnemo.Tests.Integration.Repetition
 {
     public class FinishSessionTests : IntegrationTestBase
     {

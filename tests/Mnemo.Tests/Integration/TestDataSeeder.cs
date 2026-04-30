@@ -7,7 +7,7 @@ using Mnemo.Common;
 using Mnemo.Data;
 using Mnemo.Data.Entities;
 
-namespace tests.Integration
+namespace Mnemo.Tests.Integration
 {
     public class TestDataSeeder
     {

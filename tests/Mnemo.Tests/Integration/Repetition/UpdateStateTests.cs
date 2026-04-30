@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Mnemo.Common;
+using Mnemo.Tests.Integration;
 using Mnemo.Services;
 
-namespace tests.Integration.Repetition
+namespace Mnemo.Tests.Integration.Repetition
 {
     public class UpdateStateTests : IntegrationTestBase
     {

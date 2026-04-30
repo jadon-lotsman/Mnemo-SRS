@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Mnemo.Data.Entities;
+using Mnemo.Tests.Integration;
 using Mnemo.Common;
 using Mnemo.Data.Entities;
 using Mnemo.Services;
 
-namespace tests.Integration.Repetition
+namespace Mnemo.Tests.Integration.Repetition
 {
     public class StartSessionTests : IntegrationTestBase
     {
@@ -24,7 +26,7 @@ namespace tests.Integration.Repetition
 
 
             // Act
-            var result = await sessionService.StartRepetitionSessionAsync(user.Id);
+            var result = await sessionService.StartRepetitionSessionAsync(user.Id, "random");
 
 
             // Assert
@@ -51,7 +53,7 @@ namespace tests.Integration.Repetition
 
 
             // Act
-            var result = await sessionService.StartRepetitionSessionAsync(user.Id);
+            var result = await sessionService.StartRepetitionSessionAsync(user.Id, "random");
 
 
             // Assert

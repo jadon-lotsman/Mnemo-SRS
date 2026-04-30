@@ -3,11 +3,11 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using Mnemo.Common;
+using Mnemo.Contracts.Dtos.Account.Requests;
+using Mnemo.Services.Queries;
 using Mnemo.Data.Entities;
 using Mnemo.Services;
-using Mnemo.Services.Queries;
-using Mnemo.Contracts.Dtos.Account.Requests;
-using Mnemo.Common;
 
 namespace Mnemo.Controllers
 {

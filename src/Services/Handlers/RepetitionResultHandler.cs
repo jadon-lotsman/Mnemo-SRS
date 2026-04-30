@@ -1,7 +1,7 @@
-﻿using Mnemo.Common;
-using Mnemo.Contracts.Dtos.Repetition;
+﻿using Mnemo.Contracts.Dtos.Repetition;
 using Mnemo.Data.Entities;
 using Mnemo.Services.Queries;
+using Mnemo.Common;
 
 namespace Mnemo.Services.Handlers
 {

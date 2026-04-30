@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Mnemo.Common;
 using Mnemo.Contracts.Dtos.Repetition;
 using Mnemo.Data;
-using Mnemo.Data.Entities;
+using Mnemo.Common;
 using Mnemo.Services.Handlers;
+using Mnemo.Data.Entities;
 using Mnemo.Services.Queries;
 
 namespace Mnemo.Services

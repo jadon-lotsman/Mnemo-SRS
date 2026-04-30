@@ -1,0 +1,451 @@
+// Variables
+$layoutWidth: 400px;
+
+$clear-white: #FFFFFF;
+$shadow: #BBBBBB;
+
+$plane-white: #F1F1F1;
+$plane-gray: #E2E2E2;
+
+$black-font: #181818;
+$gray-font: #909090;
+
+// Mixins
+@mixin lift($distance: -2px, $shadow-offset: 2px) {
+    transition: transform 0.2s, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY($distance);
+        box-shadow: ($shadow-offset + 5px) ($shadow-offset + 5px) 0px $shadow;
+    }
+}
+
+// Reset
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+ol {
+    list-style-type: none;
+}
+
+body {
+    max-width: $layoutWidth;
+    margin: 0 auto;
+    font-family: 'Inter', sans-serif;
+}
+
+input {
+    outline: none;
+    font-family: 'Inter', sans-serif;
+}
+
+button {
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+}
+
+::selection {
+    color: #181818;
+    background-color: $shadow;
+}
+
+
+
+//
+// Styles
+//
+
+// Basic
+button {
+    @include lift();
+
+    color: $black-font;
+    background-color: $plane-white;
+    box-shadow: 5px 5px 0px $shadow;
+
+    font-size: 16px;
+
+    padding: 10px;
+    border-radius: 12px;
+}
+
+.big-button {
+    width: 100%;
+}
+
+.small-button {
+    height: 40px;
+    width: 40px;
+    min-height: 40px;
+    min-width: 40px;
+
+    position: relative;
+
+    .material-symbols-rounded {
+        color: $shadow;
+
+        position: absolute;
+        top: 8px;
+        left: 8px;
+    }
+}
+
+
+// Common
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    color: $gray-font;
+    margin: 20px 0px 10px 0px;
+    width: 100%;
+    font-size: 16px;
+
+    h2 {
+        font-size: inherit;
+        font-weight: 400;
+    }
+
+    span {
+        font-size: inherit;
+        font-weight: 300;
+    }
+}
+
+.collapse-wrapper {
+    position: relative;
+
+    .toggle-input {
+        display: none;
+    }
+
+    .toggle-chevron {
+        color: $gray-font;
+
+        transition: transform 0.1s ease;
+
+        position: absolute;
+        top: 20px;
+        left: -5px;
+
+        font-size: 20px;
+    }
+
+    .toggle-label {
+        cursor: pointer;
+
+        display: flex;
+        user-select: none;
+
+        margin-left: 18px;
+        margin-bottom: -15px;
+    }
+
+    .content {
+        display: none;
+    }
+
+    .toggle-input:checked+.toggle-label {
+        margin-bottom: 0px;
+    }
+
+    .toggle-input:checked~.content {
+        display: block;
+    }
+
+    .toggle-input:checked+.toggle-label .toggle-chevron {
+        transform: rotate(90deg);
+    }
+}
+
+
+// Calendar
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 7px;
+
+    &-day {
+        @include lift();
+
+        cursor: default;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        box-shadow: 5px 5px 0px $shadow;
+
+        background-color: $plane-white;
+
+        height: 65px;
+        border-radius: 12px;
+
+        font-size: 16px;
+    }
+}
+
+// Training
+.mode-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(40%, 1fr));
+
+    gap: 10px;
+    margin-bottom: 15px;
+
+    .training-radio-item {
+        @include lift();
+
+        box-shadow: 5px 5px 0px $shadow;
+        border-radius: 12px;
+        user-select: none;
+
+        label {
+            cursor: pointer;
+            display: block;
+
+            background-color: $plane-white;
+
+            border-radius: inherit;
+            padding: 10px;
+        }
+
+        input {
+            display: none;
+        }
+
+        .mode-title {
+            display: flex;
+            color: $black-font;
+
+            font-size: 16px;
+            padding-bottom: 20px;
+
+            position: relative;
+
+            &::before {
+                content: "";
+                display: block;
+
+                background-color: $plane-gray;
+
+                border-radius: 4px;
+                margin-right: 10px;
+
+                width: 20px;
+                height: 20px;
+            }
+
+            &::after {
+                content: "check";
+                color: $gray-font;
+
+                transition: opacity 0.2s ease;
+                opacity: 0%;
+
+                position: absolute;
+                top: -5px;
+                left: -2px;
+
+                font-family: 'Material Symbols Rounded';
+                font-size: 25px;
+            }
+        }
+
+        .mode-description {
+            color: $gray-font;
+
+            font-size: 14px;
+            font-weight: 400;
+
+            max-width: 80%;
+        }
+
+        input:checked+label .mode-title::after {
+            opacity: 100%;
+        }
+    }
+}
+
+
+// Self-Assessment
+.my-class {}
+
+
+// Vocabulary
+.input-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+
+    .small-button {
+        @include lift();
+
+        color: $gray-font;
+        background-color: $plane-gray;
+
+        font-size: 15px;
+    }
+
+    .search-form {
+        @include lift();
+
+        display: flex;
+        justify-content: space-between;
+        background-color: $clear-white;
+        box-shadow: 5px 5px 0px $shadow;
+        width: 100%;
+
+        border-radius: 12px;
+        margin-bottom: 15px;
+
+        margin-right: 10px;
+
+        input {
+            border: 3px solid $plane-gray;
+            border-radius: 12px 0px 0px 12px;
+            border-right: none;
+            background-color: inherit;
+
+
+            padding: 8px 12px;
+            width: 100%;
+
+            font-size: 15px;
+        }
+
+        button {
+            @include lift(0, 0);
+
+            margin-left: -10px;
+        }
+    }
+}
+
+.part-of-speech {
+    cursor: default;
+    color: $gray-font;
+
+    font-weight: 300;
+
+    padding-left: 5px;
+}
+
+.entry {
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    color: $black-font;
+    background-color: $plane-gray;
+    box-shadow: 5px 5px 0px $shadow;
+
+    max-width: 470px;
+    min-width: 370px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+
+    font-size: 16px;
+
+    header {
+        display: grid;
+        grid-template-columns: 30% 30% 40%;
+        background-color: $plane-white;
+
+        padding: 10px 15px;
+
+        border-radius: 12px;
+
+        .foreign {
+            content-visibility: auto;
+        }
+
+        .transcription {
+            margin: 0 5px;
+        }
+
+        .translations {
+            display: flex;
+            flex-direction: column;
+
+            margin-top: -2px;
+
+            li {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+    }
+
+    footer {
+        padding: 15px;
+
+        li {
+
+            font-size: 16px;
+            font-style: italic;
+        }
+
+        li::before {
+            content: "–";
+            padding-right: 10px;
+        }
+    }
+}
+
+
+// Session
+.task {
+    background-color: $plane-white;
+    box-shadow: 5px 5px 0px $shadow;
+    border-radius: 12px;
+
+    max-width: 470px;
+    min-width: 370px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 15px;
+
+        .prompt {
+            color: $gray-font;
+
+            font-size: 16px;
+
+            .bold {
+                color: $black-font;
+            }
+        }
+
+    }
+
+    footer {
+        padding: 0px 14px 0px 14px;
+        margin-bottom: 20px;
+
+        input {
+            border: $plane-gray 3px solid;
+            border-radius: 12px;
+            padding: 8px 12px;
+
+            width: 100%;
+
+            font-size: 15px;
+        }
+
+    }
+
+    .big-button {
+        background-color: $plane-gray;
+    }
+}

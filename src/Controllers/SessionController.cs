@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Mnemo.Common;
 using Mnemo.Contracts.Dtos.Repetition;
+using Mnemo.Common;
 using Mnemo.Contracts.Dtos.Repetition.Requests;
-using Mnemo.Services;
 using Mnemo.Services.Queries;
+using Mnemo.Services;
 
 namespace Mnemo.Controllers
 {
